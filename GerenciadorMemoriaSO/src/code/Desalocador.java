@@ -12,9 +12,8 @@ import java.util.logging.Logger;
 
 public class Desalocador implements Runnable{
 
-    VetorRequisicao fila;
+
     Semaforo gestor;
-    static long tempo;
 
     public Desalocador(Semaforo gestor) { 
         this.gestor = gestor;
@@ -58,7 +57,7 @@ public class Desalocador implements Runnable{
 
             gestor.ocupados.remove(0);
             gestor.d.release();
-        } while (gestor.quantidadeHeap >= gestor.percentualMinimo);
+        }while (gestor.quantidadeHeap >= gestor.percentualMinimo);
         gestor.d.acquire();
         gestor.a.release();
     }   

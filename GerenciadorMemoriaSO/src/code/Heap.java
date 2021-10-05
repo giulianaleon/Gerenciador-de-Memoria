@@ -22,15 +22,15 @@ import code.Desalocador;
 // Vetor de alocados e � uma lista, assim como livres.
 
 public class Heap {
-    public int tamanhoTotal;
-    public int[] vetorHeap = new int[tamanhoTotal];
-    public int percentualMem = 0;
-    public int percentualMemUsuario = 0;
-    public int percentualMinimo = 0;
-    public int percentualMemMinimo = 0;
+    public int tamanhoTotal; //tamanho total da heap
+    public int[] vetorHeap = new int[tamanhoTotal]; //a heap em si
+    public int percentualMem = 0; //valor bruto de quantos elementos podem ter na heap antes d desalocar
+    public int percentualMemUsuario = 0; //percentual maximo de ocupação da heap
+    public int percentualMinimo = 0;     //percentual minimo de ocupação da heap
+    public int percentualMemMinimo = 0;  //valor bruto de quantos elementos devem ter na heap para parar de desalocar
     public int quantidadeHeap = 0;
-    List <Segmentos> ocupados = new ArrayList<Segmentos>();  		 
-    List <Segmentos> livres = new ArrayList<Segmentos>(); 			
+    List <Segmentos> ocupados = new ArrayList<Segmentos>();  		 //List<String> x = new ArrayList<String>();
+    List <Segmentos> livres = new ArrayList<Segmentos>(); 			//inicialmente toda a heap est� livre
 
     public void setTamanho(int tamanhoTotal, int percentualMemUsuario, int percentualMinimo) {
         this.tamanhoTotal = tamanhoTotal;
@@ -46,12 +46,12 @@ public class Heap {
         livres.add(novo);
 
         this.percentualMem = tamanhoTotal * percentualMemUsuario;
-        this.percentualMem = this.percentualMem / 100;
+        this.percentualMem = this.percentualMem / 100;               ////  <--------------------- PORCENTAGEM MAX
         this.vetorHeap = vector;
 
 
-        this.percentualMemMinimo = tamanhoTotal * percentualMinimo;                                            //  <--------------------- PORCENTAGEM MINIMA
-        this.percentualMemMinimo = this.percentualMemMinimo / 100;  
+        this.percentualMemMinimo = tamanhoTotal * percentualMinimo;   //  <--------------------- PORCENTAGEM MINIMA
+        this.percentualMemMinimo = this.percentualMemMinimo / 100;
 
     }
 
@@ -59,15 +59,10 @@ public class Heap {
         for(int i = 0; i<tamanhoTotal;i++) {
             System.out.println("["+i+"]="+vetorHeap[i]);
         }
+
+        System.out.println(""+livres.size()+"");
     }
 
-    public void imprimirLivres() {
-        System.out.println("---------------------------");
-        for(Segmentos s : livres){
-            System.out.println("Inicio="+s.getInicio()+";Tamanho="+s.getTamanho());
-        }
-        System.out.println("---------------------------");
-    }
 
     public void imprimirOcupados()
     {
@@ -80,10 +75,6 @@ public class Heap {
 
     public int inserirHeap(int valorReq){
 
-        File arquivo = new File( "arquivoParalelo.txt" );
-
-        PrintWriter escreve = null;
-        FileWriter arq = null;
         if(quantidadeHeap >= percentualMem) {  // Se a quantidade de elementos contidos na heap � maior que o meu percentual de elementos que posso ter
             //Preciso desalocar pois est� MUITO ocupada
             //Preciso mandar o valor da requisi��o para poder alocar pois ele retorna direto para o while
@@ -100,18 +91,16 @@ public class Heap {
         int tamanhoDisponivel = 0;
         tamanhoDisponivel = s.getTamanho();
 
-        if(valorReq > tamanhoDisponivel) { // Se o valor da requisi��o � maior que o tamanho disponivel
+        if(valorReq > tamanhoDisponivel) { // Se o valor da requisi��o for maior que o tamanho disponivel
             if(somatorio() >= valorReq){
                 compacta();
-            }else{  //Se mesmo compactando n�o tiver espa�o
+            }else{  //Se mesmo compactando não tiver espaço o suficiente
                 desalocar();
             }
             return valorReq;
         }
         else{
-            //Posso inserir na heap
-            //removo livre[0] e insiro um novo com as posi��es livres que sobraram e ordeno
-            //insiro em ocupados e ordeno
+               //Posso inserir na heap
             int id = gerarID();
             Segmentos novo = new Segmentos(posicao, valorReq, id);
 
@@ -156,15 +145,19 @@ public class Heap {
     }
 
     public void desalocar() {
+        //Tirar da lista de ocupados e por na lista de livres
+
 
         do{
-        	
+
+
         int t = 0;
         int inicio=0;
-
+        //Desaloca o segmento que está ocupando mais espaço
         Segmentos s = ocupados.get(0);//pega maior
         t = s.getTamanho();
         inicio = s.getInicio();
+
 
         for(int i = 0; i<t; i++)
         {
@@ -180,12 +173,12 @@ public class Heap {
         }while (quantidadeHeap >= percentualMinimo);
     }
 
-    public void compacta()  //COMPACTA��O POR CAUSA DA FRAGMENTA��O
+    public void compacta()  //realizada por conta da fragmentação externa
     {
 
-        int soma = 0;
-        int inicio1 = 0;
-        int inicio2 = 0;
+        int soma;
+        int inicio1;
+        int inicio2;
         int contador = 0;
 
         int tamanhoLivres = livres.size();
@@ -246,6 +239,9 @@ public class Heap {
         livres.add(novo);
 
     }
+
+
+
 
     public static int gerarID() {
         Random random = new Random();

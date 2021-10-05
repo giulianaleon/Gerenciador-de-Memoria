@@ -5,11 +5,11 @@ package code;
  * @author giuliana
  */
 
-//O vetor de requisição é uma fila circular
+//O vetor de requisiï¿½ï¿½o ï¿½ uma fila circular
 
 public class VetorRequisicao {
      
-     public int TAMANHO = 0;  //Tamanho inicial da fila
+     public int TAMANHO = 0;  //Tamanho do vetor
      public  int quantidade=0;
      private Integer[]vetor;    
 
@@ -18,7 +18,7 @@ public class VetorRequisicao {
         vetor = new Integer[TAMANHO];
     }
      
-     public int getTAMANHO() {
+     public int getTAMANHO() { //nunca Ã© utilizada
     	 return quantidade;
      }
      
@@ -28,18 +28,19 @@ public class VetorRequisicao {
      
      public boolean isFilaCheia(){
          for (Integer elementoFila : vetor) {
-                 if(elementoFila==null){ //Não está cheia
+                 if(elementoFila==null){ //nao ta completamente cheia
                      return false;
                  }
          }
-         return true; //Ela está cheia
+
+         return true; //ta cheia
      }
      
      public void incluirFilaC (int valor){
       if (isFilaCheia() == false){ 
           int pos = 0;
             for (Integer elementoFila : vetor){
-                if(elementoFila==null){            //Posição livre
+                if(elementoFila==null){            //Posiï¿½ï¿½o livre
                     vetor[pos]=valor;
                     quantidade++;
                 break;
@@ -49,7 +50,7 @@ public class VetorRequisicao {
           
       }
       else{
-           System.out.println("\n Não é possível inserir, ela está cheia");
+           System.out.println("\n Nï¿½o ï¿½ possï¿½vel inserir, ela estï¿½ cheia");
       }      
      }
      
@@ -84,7 +85,7 @@ public class VetorRequisicao {
     	System.out.println("\n Fila=[inicio=0, fim=" + quantidade + "]");
       
     		for (int i = 0; i < quantidade; i++) {
-    			System.out.println("\n Elemento na posição " + i + ", valor:" + vetor[i]);
+    			System.out.println("\n Elemento na posiï¿½ï¿½o " + i + ", valor:" + vetor[i]);
     		}	
  
     		System.out.println(" ");

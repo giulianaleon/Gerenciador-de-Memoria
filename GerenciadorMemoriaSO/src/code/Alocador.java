@@ -28,7 +28,7 @@ public class Alocador implements Runnable {
     public void run() {    //Chamada do object.run
         
         try {
-            while(gestor.getVerificacao() == 0){     //Verifica para poder rodar sempre a thread sem parar
+            while(gestor.getVerificacao() == 0){     //Verifica se ainda hÃ¡ oq inserir
                 inserir();
             }
         }  catch (InterruptedException ex) {
@@ -42,39 +42,37 @@ public class Alocador implements Runnable {
     public void inserir() throws InterruptedException, IOException {
         
         int valorReq = 0 ;
-        int a = 0; //Variaveis para sair das condições 
-        int b = 0; //Variaveis para sair das condições 
+        int a = 0; //Variaveis para sair das condiï¿½ï¿½es 
+        int b = 0; //Variaveis para sair das condiï¿½ï¿½es 
     
-        while(fila.verifica()!= true){   //Enquanto a fila não estiver em 0 
+        while(fila.verifica()!= true){   //Faz isso enquanto o vetor nÃ£o estiver vazio
         	
             valorReq = fila.removerFilaC();    //Remove do vetor de req e coloca na variavel valorReq
             
-            if(gestor.quantidadeHeap >= gestor.percentualMem) {  //Se a quantidade de elementos contidos na heap é maior que o percentual de elementos que posso ter    
+            if(gestor.quantidadeHeap >= gestor.percentualMem) {  //Se a quantidade de elementos contidos na heap ï¿½ maior que o percentual de elementos que posso ter    
             	//desaloca
-            	gestor.d.release();    //Libera o recurso do semaforo  
-            	gestor.a.acquire();    //Requisitamos acesso
+            	gestor.d.release();    //Libera a desalocaÃ§Ã£o
+            	gestor.a.acquire();
             }
             
-           Segmentos s = gestor.livres.get(0);  //lista do tipo Segmentos
+           Segmentos s = gestor.livres.get(0);  //Pega o buraco de maior tamanho da lista de livres
        
            int posicao = 0;
-           
-           posicao = s.getInicio();   //Posição de inicio de espaços livres
+           posicao = s.getInicio();   //Posiï¿½ï¿½o de inicio de espaï¿½os livres
            int tamanhoDisponivel = 0;
            tamanhoDisponivel = s.getTamanho();   //Tamanho dos segmentos livres
            
-           if(valorReq > tamanhoDisponivel) { //Se o valor da requisição é maior que o tamanho disponivel (tamanho disponivel = buraco)        
-        	   while(valorReq > tamanhoDisponivel) {   //Enquanto o valor de requisição for maior que o tamanho disponivel (buraco)
-        		   
-        		   if(somatorio() >= valorReq){    //Se o somatorio de espaços livres for maior igual que o valor da requisição faz a compactação de buracos
+           if(valorReq > tamanhoDisponivel) { //Se o valor da requisiï¿½ï¿½o ï¿½ maior que o tamanho disponivel (tamanho disponivel = buraco)        
+        	   while(valorReq > tamanhoDisponivel) {   //Enquanto o valor de requisiï¿½ï¿½o for maior que o tamanho disponivel (buraco)
+        		   if(somatorio() >= valorReq){    //Se o somatorio de espaï¿½os livres for maior igual que o valor da requisiï¿½ï¿½o faz a compactaï¿½ï¿½o de buracos
         			   compacta();
-                        }else{   //Mesmo compactando, não possui espaço suficiente
+                        }else{   //Mesmo compactando, nï¿½o possui espaï¿½o suficiente
                         	gestor.d.release();     //desaloca
                             gestor.a.acquire();     //desaloca
                        }
                      
                       	s = gestor.livres.get(0);  //Pega o primeiro bloco
-                      	posicao = s.getInicio(); //Posição de inicio de espaços livres
+                      	posicao = s.getInicio(); //Posiï¿½ï¿½o de inicio de espaï¿½os livres
                       	tamanhoDisponivel = 0;
                       	tamanhoDisponivel = s.getTamanho();
                    }
@@ -84,9 +82,7 @@ public class Alocador implements Runnable {
            } 
            
            if(a == 0 || a == 1 && b == 1) {  
-        	   //Se eu posso inserir na heap
-               //Removo livre[0] e insiro um novo com as posições livres que sobraram e ordeno
-               //Insiro em ocupados e ordeno
+
         	   int id = gerarID();
         	   
         	   Segmentos novo = new Segmentos(posicao, valorReq, id);
@@ -98,7 +94,7 @@ public class Alocador implements Runnable {
                     Collections.sort(gestor.ocupados);
                 }
 
-               	
+
                  for(int i = 0;i<valorReq; i++) {    //Inserindo na heap
                 	 gestor.vetorHeap[posicao]= 1;   //ID
                 	 posicao++;
@@ -110,7 +106,7 @@ public class Alocador implements Runnable {
                  s.setInicio(posicao);
                  s.setTamanho(tamNovo);
                  gestor.livres.set(0, s);
-                 Collections.sort(gestor.livres);  //Ordena os semaforos livre
+                 Collections.sort(gestor.livres);  //Ordena os segmentos livres
                  a=0;  //Zera as variaveis
                  b=0;  //Zera as variaveis
            }
@@ -120,7 +116,8 @@ public class Alocador implements Runnable {
        
         if(fila.verifica() == true){
             t = 0;    
-            t = System.currentTimeMillis(); 
+            t = System.currentTimeMillis();  
+
             gestor.setTempoFinal(t);
         }
  
@@ -132,9 +129,9 @@ public class Alocador implements Runnable {
     public int somatorio() {
     	
     	int soma = 0;
-        int t = gestor.livres.size();  //Espaços livres no semaforo
+        int t = gestor.livres.size();  //Espaï¿½os livres no semaforo
         
-        for(int i = 0; i<t; i++) {  //Enquanto tiver espaços livres no semaforo
+        for(int i = 0; i<t; i++) {  //Enquanto tiver espaï¿½os livres no semaforo
         	
         	Segmentos s = gestor.livres.get(i);
             soma = soma + s.getTamanho();
@@ -142,61 +139,71 @@ public class Alocador implements Runnable {
         return soma;
     }    
         
-    public void compacta() {   //COMPACTAÇÃO POR CAUSA DA FRAGMENTAÇÃO
+    public void compacta() {   //COMPACTAï¿½ï¿½O POR CAUSA DA FRAGMENTAï¿½ï¿½O
     	
-    	int soma = 0;
-    	int inicio1 = 0;
-    	int inicio2 = 0;
+    	int soma;
+    	int inicio1;
+    	int inicio2;
     	int contador = 0;
     	int tamanhoLivres = gestor.livres.size();
     	int tamanhoOcupados = gestor.ocupados.size();
         
-    	while(contador < gestor.tamanhoTotal) {   //Enquanto o contador for menor que o tamanho total de elementos NO semaforo
-    		for(int i = 0; i<tamanhoLivres; i++) {   //Percorre todos os elementos livres
-    			Segmentos livre = gestor.livres.get(i);  //Cria um objetos de livres de tamanho i
-    			inicio1 = livre.getInicio();    //Inicio 1 é o bloco que tá livre
-    			soma = livre.getInicio()+livre.getTamanho(); //Soma o tamanho que ta livre com o tamanho dos segmentos
+    	while(contador < gestor.tamanhoTotal) {   //Se o contador for menor que o tamanho total do semaforo
+    		
+    		for(int i = 0; i<tamanhoLivres; i++) {   //Se i for menor que o espaï¿½o de tamanhos livres
+                
+    			Segmentos livre = gestor.livres.get(i);
+    			inicio1 = livre.getInicio();    //Inicio 1 ï¿½ o bloco que tï¿½ livre
+    			soma = livre.getInicio()+livre.getTamanho(); 
                     
-    			for(int j = 0; j < tamanhoOcupados; j++){    //Percorre todos os elementos ocupados 
+    			for(int j = 0; j < tamanhoOcupados; j++){
                   
-    				Segmentos ocupado = gestor.ocupados.get(j);  //Cria um objeto de ocupados de tamanho j
-                    inicio2 = ocupado.getInicio();   //Inicio 2 é o bloco que ta ocupado
-                    	if(soma == ocupado.getInicio() && gestor.vetorHeap[ocupado.getInicio()]==1){   //Testa para ver se tem elementos (= 1 por causa da HEAP)
-                           for(int k = 0; k< ocupado.getTamanho();k++){ //Percorre o tamanho de cada requisição
-                               gestor.vetorHeap[inicio1]= gestor.vetorHeap[inicio2];  //Faz uma cópia de inicio1
-                               gestor.vetorHeap[inicio2]=0;  //Zera a cópia de ocupados
-                               inicio1++;    //Vai para próxima posição
-                               inicio2++;    //Vai para próxima posição
+    				Segmentos ocupado = gestor.ocupados.get(j);
+                    inicio2 = ocupado.getInicio();   //Inicio 2 ï¿½ o bloco que ta ocupado
+                    	if(soma == ocupado.getInicio() && gestor.vetorHeap[ocupado.getInicio()]==1){   //Testa para ver se tem
+                           for(int k = 0; k< ocupado.getTamanho();k++){
+                               gestor.vetorHeap[inicio1]= gestor.vetorHeap[inicio2];
+                               gestor.vetorHeap[inicio2]=0;  //ZERA O OCUPADO
+                               inicio1++;    
+                               inicio2++;  
                            }
-                           //Depois de percorrer toda lista de ocupados, clonar uma e zerar
-                           livre.setInicio(livre.getInicio()+ocupado.getTamanho()); //Inicio da fila recebe a primeira requisição com seu tamanho
-                           gestor.livres.set(i, livre); //Seta o tamanho de livres
-                           ocupado.setInicio(ocupado.getInicio()-livre.getTamanho()); //Fila de ocupados recebe o inicio da requisição MENOS o seu tamanho
-                           gestor.ocupados.set(j, ocupado); //Seta o tamanho de ocuádps
+
+                           livre.setInicio(livre.getInicio()+ocupado.getTamanho());
+                           gestor.livres.set(i, livre);
+                           ocupado.setInicio(ocupado.getInicio()-livre.getTamanho());
+                           gestor.ocupados.set(j, ocupado);
+
                        }
                    }
                }           
-    	   contador++;  //Anda mais um elemento nas listas 
+          
+    	   contador++;
        }
        
        int novoTamanho = 0;
        int posicao = gestor.tamanhoTotal;
        
-       for(int k = 0; k < tamanhoLivres; k++) {  //Enquanto tiver tamanho livre
-           Segmentos s = gestor.livres.get(k); //Manda esses livres para s
+       
+       for(int k = 0; k < tamanhoLivres; k++) {
+           Segmentos s = gestor.livres.get(k);
           
-           if(posicao > s.getInicio()) {   //Se a posição desse elemento for maior que a posição de inicio da fila	
-               posicao = s.getInicio();   //Essa posição é realocada para o inicio
+           if(posicao > s.getInicio()) {
+               posicao = s.getInicio();
            }
-           novoTamanho = novoTamanho + s.getTamanho();  //A lista é reajeitada para o novo tamanho que ela possue após a inserção do elemento
-       } 
-       for(int k = 0; k<tamanhoLivres; k++){   // Se K for menor que os tamanhos disponiveis
-           gestor.livres.remove(0);  //Remove a primeira posição de liveres
+           novoTamanho = novoTamanho + s.getTamanho();
        }
-       Segmentos novo = new Segmentos(posicao, novoTamanho, 0);  //O novo segmento recebe uma posição, um tamanho e um ID zero pois ainda n foi alocado com nenhuma req
-       gestor.livres.add(novo);  //Esse novo segmento é adicionado na fila de livres
+      
+       
+       for(int k = 0; k<tamanhoLivres; k++){
+           gestor.livres.remove(0);
+       }
+       
+       Segmentos novo = new Segmentos(posicao, novoTamanho, 0);
+       gestor.livres.add(novo);  
    }  
-    
+
+
+
     public static int gerarID() {
     	Random random = new Random();
     	return random.nextInt(1001)+1;
@@ -204,4 +211,3 @@ public class Alocador implements Runnable {
     
 
 }
-

@@ -114,14 +114,14 @@ public class Interface extends javax.swing.JFrame {
         btnSequencial.setText("SEQUENCIAL");
         btnSequencial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSequencialActionPerformed(evt);
+                btnExecParalelamenteActionPerformed(evt);
             }
         });
 
         btnExecParalelamente.setText("PARALELO");
         btnExecParalelamente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExecParalelamenteActionPerformed(evt);
+                btnSequencialActionPerformed(evt);
             }
         });
 
@@ -248,8 +248,6 @@ public class Interface extends javax.swing.JFrame {
     public int acerto = 0;
     long inicioSeq = 0;
     long fimSeq = 0;
-    long inicioParal = 0;
-    long fimParal = 0;
     Semaforo gestor = new Semaforo(); //Estrutura paralela
 
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {
@@ -329,7 +327,7 @@ public class Interface extends javax.swing.JFrame {
             fimSeq  = System.currentTimeMillis();
             long tempo = fimSeq - inicioSeq;
             //System.out.println(" Tempo final = "+ fimSeq);
-            JOptionPane.showMessageDialog(null, "Execu��o sequencial conclu�da com sucesso! Tempo de="+tempo+"ms");
+            JOptionPane.showMessageDialog(null, "Execu��o paralela conclu�da com sucesso! Tempo de="+tempo+"ms");
         }else{
             JOptionPane.showMessageDialog(null, "N�o � possivel executar. Insira novamente os dados");
         }
@@ -337,19 +335,19 @@ public class Interface extends javax.swing.JFrame {
 
     private void btnHeapActionPerformed(java.awt.event.ActionEvent evt) {
 
-        System.out.println("---A Heap sequencial---");
-        vetorHeap.imprimirHeap();
         System.out.println("---A Heap paralela---");
+        vetorHeap.imprimirHeap();
+        System.out.println("---A Heap sequencial---");
         gestor.imprimirHeap();
 
     }
 
     private void btnVerOcupActionPerformed(java.awt.event.ActionEvent evt) {
 
-        System.out.println("---Vetor de ocupados da execu��o sequencial �:---");
+        System.out.println("---Vetor de ocupados da execu��o paralela �:---");
         vetorHeap.imprimirOcupados();
 
-        System.out.println("---Vetor de ocupados da execu��o paralela �:---");
+        System.out.println("---Vetor de ocupados da execu��o sequencial �:---");
         gestor.imprimirOcupados();
 
 
@@ -384,7 +382,7 @@ public class Interface extends javax.swing.JFrame {
             if(gestor.getVerificacao() == 1){
                 tempoFinal = gestor.getTempoFinal();
                 tempo = tempoFinal - tempoInicial;
-                JOptionPane.showMessageDialog(null, "Execu��o paralela conclu�da com sucesso! Tempo de="+tempo+"ms");
+                JOptionPane.showMessageDialog(null, "Execu��o sequencial conclu�da com sucesso! Tempo de="+tempo+"ms");
             }
         }else{
             JOptionPane.showMessageDialog(null, "N�o � possivel executar. Insira novamente os dados");
@@ -394,9 +392,9 @@ public class Interface extends javax.swing.JFrame {
     private void btnVetReqActionPerformed(java.awt.event.ActionEvent evt) {
 
         System.out.println("O vetor de requisi��es �");
-        System.out.println("---Sequencial---");
-        fila.print();
         System.out.println("---Paralela---");
+        fila.print();
+        System.out.println("---Sequencial---");
         filaParalela.print();
 
 
